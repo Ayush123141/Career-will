@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Career Will</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="particle.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #141620 0%, #1a1d2e 100%);
+      color: white;
+    }
+    .navbar { background: rgba(20, 22, 32, 0.95) !important; }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .stat-number { font-size: 2.5rem; font-weight: 800; color: #667eea; }
+    .table { background: transparent; }
+    .table thead th { border-color: rgba(102, 126, 234, 0.2); color: #667eea; font-weight: 700; }
+    .table tbody td { border-color: rgba(102, 126, 234, 0.2); }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><i class="fas fa-graduation-cap"></i> Career Will Admin</a>
+      <button class="btn btn-danger" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container-fluid p-4">
+    <h2 style="margin-bottom: 2rem;">Admin Dashboard</h2>
+
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="stat-box">
+          <div class="stat-number" id="totalUsers">0</div>
+          <div>Total Users</div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="stat-box">
+          <div class="stat-number" id="totalExams">0</div>
+          <div>Exam Submissions</div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="stat-box">
+          <div class="stat-number" id="totalTests">0</div>
+          <div>Tests Completed</div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="stat-box">
+          <div class="stat-number" id="avgMarks">0</div>
+          <div>Average Marks</div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs" style="border-color: rgba(102, 126, 234, 0.2); margin: 2rem 0;">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#students" style="color: white;">Students</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#exams" style="color: white;">Exams</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tests" style="color: white;">Tests</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="students" class="tab-pane fade show active">
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Class</th><th>Joined</th></tr></thead>
+            <tbody id="studentsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="exams" class="tab-pane fade">
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Student</th><th>Email</th><th>Exam</th><th>Marks</th><th>Stream</th><th>Date</th></tr></thead>
+            <tbody id="examsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="tests" class="tab-pane fade">
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Student</th><th>Test Type</th><th>Score</th><th>Correct</th><th>Date</th></tr></thead>
+            <tbody id="testsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    async function loadStats() {
+      try {
+        const response = await fetch('http://localhost:5000/api/admin/students');
+        const students = await response.json();
+        document.getElementById('totalUsers').textContent = students.length;
+
+        const examsResp = await fetch('http://localhost:5000/api/admin/exams');
+        const exams = await examsResp.json();
+        document.getElementById('totalExams').textContent = exams.length;
+
+        const testsResp = await fetch('http://localhost:5000/api/admin/tests');
+        const tests = await testsResp.json();
+        document.getElementById('totalTests').textContent = tests.length;
+
+        const avgMarks = exams.length > 0 ? exams.reduce((a, e) => a + e.marks, 0) / exams.length : 0;
+        document.getElementById('avgMarks').textContent = Math.round(avgMarks);
+
+        // Display students
+        const studentsHtml = students.map(s => `
+          <tr>
+            <td>${s.id}</td>
+            <td>${s.username}</td>
+            <td>${s.email}</td>
+            <td>${s.class || 'N/A'}</td>
+            <td>${new Date(s.createdAt).toLocaleDateString()}</td>
+          </tr>
+        `).join('');
+        document.getElementById('studentsTable').innerHTML = studentsHtml;
+
+        // Display exams
+        const examsHtml = exams.map(e => `
+          <tr>
+            <td>${e.userId}</td>
+            <td>${e.userId}</td>
+            <td>${e.exam}</td>
+            <td>${e.marks}</td>
+            <td>${e.stream}</td>
+            <td>${new Date(e.createdAt).toLocaleDateString()}</td>
+          </tr>
+        `).join('');
+        document.getElementById('examsTable').innerHTML = examsHtml;
+
+        // Display tests
+        const testsHtml = tests.map(t => `
+          <tr>
+            <td>${t.userId}</td>
+            <td>${t.testType}</td>
+            <td>${t.score}%</td>
+            <td>${t.correctAnswers}/${t.totalQuestions}</td>
+            <td>${new Date(t.timestamp).toLocaleDateString()}</td>
+          </tr>
+        `).join('');
+        document.getElementById('testsTable').innerHTML = testsHtml;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function logout() {
+      window.location.href = 'index.html';
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>

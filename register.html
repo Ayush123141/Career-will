@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Career Will</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="particle.js"></script>
+  <style>
+    :root { --primary: #667eea; --secondary: #764ba2; --dark: #141620; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, var(--dark) 0%, #1a1d2e 100%);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-container { width: 100%; max-width: 450px; padding: 2rem; }
+    .auth-box {
+      background: rgba(20, 22, 32, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .auth-header { text-align: center; margin-bottom: 2.5rem; }
+    .auth-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .form-group { display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+    .form-group label { color: rgba(255, 255, 255, 0.9); margin-bottom: 0.5rem; font-weight: 600; }
+    .form-group input {
+      padding: 0.8rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      color: white;
+      font-size: 0.95rem;
+    }
+    .form-group input:focus { outline: none; background: rgba(255, 255, 255, 0.1); border-color: var(--primary); }
+    .btn-submit {
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .btn-submit:hover { transform: translateY(-2px); }
+    .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: none; }
+    .alert-success { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+    .alert-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+    .auth-footer { text-align: center; margin-top: 1.5rem; color: rgba(255, 255, 255, 0.7); }
+    .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-header">
+        <h2><i class="fas fa-user-plus"></i> Register</h2>
+        <p>Create your Career Will account</p>
+      </div>
+      <div id="alert" class="alert"></div>
+      <form id="registerForm">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="username" placeholder="Choose username" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Enter email" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Create password" required>
+        </div>
+        <div class="form-group">
+          <label>Class/Stream</label>
+          <input type="text" id="class" placeholder="e.g., Class 10" required>
+        </div>
+        <button type="submit" class="btn-submit"><i class="fas fa-arrow-right"></i> Register</button>
+      </form>
+      <div class="auth-footer">
+        Already have account? <a href="login.html">Login here</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const userClass = document.getElementById('class').value;
+
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password, class: userClass })
+        });
+
+        if (!response.ok) throw new Error('Registration failed');
+        const data = await response.json();
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('token', data.token);
+        
+        showAlert('Registration successful!', 'success');
+        setTimeout(() => window.location.href = 'welcome.html', 1000);
+      } catch (error) {
+        showAlert('Registration failed', 'danger');
+      }
+    });
+
+    function showAlert(msg, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = msg;
+      alert.className = `alert alert-${type}`;
+      alert.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

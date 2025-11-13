@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Will - Choose Your Path</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="particle.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000000;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      padding: 2rem;
+    }
+
+    .hero-icon {
+      font-size: 5rem;
+      color: #667eea;
+      margin-bottom: 2rem;
+      animation: fadeInDown 0.8s ease 0.2s both;
+    }
+
+    .hero-content h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .hero-content p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .btn-hero {
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      margin: 0.5rem;
+      display: inline-block;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .btn-hero:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+
+    .about-section {
+      background: rgba(20, 22, 32, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 20px;
+      margin: 3rem auto;
+      max-width: 900px;
+      padding: 3rem 2rem;
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.1);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .about-section h2 {
+      color: #667eea;
+      font-weight: 800;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-section p {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-section ul {
+      text-align: left;
+      max-width: 600px;
+      margin: 1.5rem auto;
+      padding-left: 1.5rem;
+    }
+
+    .about-section li {
+      margin-bottom: 0.8rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1.05rem;
+    }
+
+    .about-section li::marker {
+      color: #667eea;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .feature-card {
+      background: rgba(102, 126, 234, 0.1);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      background: rgba(102, 126, 234, 0.15);
+      border-color: #667eea;
+    }
+
+    .feature-card i {
+      font-size: 2.5rem;
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h4 {
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+      .about-section h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+  <script src="particle.js"></script>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <h1>Career Will</h1>
+      <p>Discover Your Perfect Career Path</p>
+      <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.8);">AI-powered career guidance for Indian students</p>
+      <div style="margin-top: 2rem;">
+        <a href="login.html" class="btn-hero"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="register.html" class="btn-hero"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="about-section">
+      <h2><i class="fas fa-info-circle"></i> What is Career Will?</h2>
+      <p>
+        <strong>Career Will</strong> is an advanced career guidance platform designed specifically for Indian students. 
+        We combine AI-powered recommendations, real exam data, expert mentorship, and comprehensive resources to help 
+        you make the best decisions about your future career.
+      </p>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-robot"></i>
+          <h4>AI Recommendations</h4>
+          <p>Get personalized career suggestions based on your marks and stream</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fas fa-chart-line"></i>
+          <h4>Exam Analysis</h4>
+          <p>Support for JEE, NEET, GATE, CLAT, and other major exams</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fas fa-brain"></i>
+          <h4>Aptitude Tests</h4>
+          <p>Discover your strengths with skill and interest assessments</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fas fa-user-tie"></i>
+          <h4>Expert Mentors</h4>
+          <p>Connect with experienced professionals in your field</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fas fa-university"></i>
+          <h4>College Database</h4>
+          <p>Explore top colleges with ratings and cutoff ranks</p>
+        </div>
+
+        <div class="feature-card">
+          <i class="fas fa-map"></i>
+          <h4>Career Roadmaps</h4>
+          <p>Step-by-step paths to achieve your career goals</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(102, 126, 234, 0.2);">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Why Choose Career Will?</h3>
+        <ul>
+          <li>✨ <strong>Focused on Indian Education System</strong> - JEE, NEET, GATE, CLAT, and more</li>
+          <li>🎯 <strong>Personalized Guidance</strong> - Recommendations tailored to your profile</li>
+          <li>📊 <strong>Data-Driven Insights</strong> - Make informed decisions with real data</li>
+          <li>🚀 <strong>Modern & Simple</strong> - Clean interface, easy to use</li>
+          <li>💯 <strong>100% Free</strong> - No hidden costs, accessible to all students</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <p style="font-style: italic; color: #a78bfa; font-size: 1.2rem;">
+          Your future, designed by you—powered by Career Will.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Simulator - Career Will</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="particle.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #141620 0%, #1a1d2e 100%);
+      color: white;
+    }
+    .navbar { background: rgba(20, 22, 32, 0.95) !important; }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .simulator-container {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 700px;
+      margin: 2rem auto;
+    }
+    .form-group label { color: rgba(255, 255, 255, 0.9); font-weight: 600; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.8rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      color: white;
+      margin-top: 0.5rem;
+    }
+    .btn-simulate {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .result-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="welcome.html"><i class="fas fa-graduation-cap"></i> Career Will</a>
+      <button class="btn btn-danger" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Career Simulator</h2>
+
+    <div class="simulator-container">
+      <h5 style="color: #667eea; margin-bottom: 1.5rem;">Configure Your Scenario</h5>
+
+      <div class="form-group">
+        <label>Stream</label>
+        <select id="stream">
+          <option value="">Select Stream</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Medical">Medical</option>
+          <option value="Laws">Laws</option>
+          <option value="Commerce">Commerce</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Expected Marks (%)</label>
+        <input type="range" id="marks" min="0" max="100" value="50">
+        <div style="text-align: center; color: #667eea; font-weight: 600; margin-top: 0.5rem;">
+          <span id="marksDisplay">50</span>%
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Years of Experience</label>
+        <input type="range" id="experience" min="0" max="20" value="0">
+        <div style="text-align: center; color: #667eea; font-weight: 600; margin-top: 0.5rem;">
+          <span id="expDisplay">Fresher</span>
+        </div>
+      </div>
+
+      <button class="btn-simulate" onclick="runSimulation()"><i class="fas fa-play"></i> Run Simulation</button>
+    </div>
+
+    <div id="resultsSection" style="display: none; max-width: 700px; margin: 2rem auto;">
+      <h3 style="text-align: center; color: #667eea; margin-bottom: 2rem;">Simulation Results</h3>
+      <div id="resultsContainer"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('marks').addEventListener('input', (e) => {
+      document.getElementById('marksDisplay').textContent = e.target.value;
+    });
+
+    document.getElementById('experience').addEventListener('input', (e) => {
+      const years = parseInt(e.target.value);
+      document.getElementById('expDisplay').textContent = years === 0 ? 'Fresher' : years + ' years';
+    });
+
+    async function runSimulation() {
+      const stream = document.getElementById('stream').value;
+      const marks = parseInt(document.getElementById('marks').value);
+      const experience = parseInt(document.getElementById('experience').value);
+
+      if (!stream) {
+        alert('Please select a stream');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:5000/api/careers/stream/' + stream);
+        const careers = await response.json();
+
+        let results = careers.map(c => ({
+          ...c,
+          score: calculateScore(c, marks, experience)
+        })).sort((a, b) => b.score - a.score).slice(0, 5);
+
+        displayResults(results, marks, experience);
+        document.getElementById('resultsSection').style.display = 'block';
+      } catch (error) {
+        alert('Error running simulation');
+      }
+    }
+
+    function calculateScore(career, marks, experience) {
+      let score = 0;
+      if (marks >= 80) score += 100;
+      else if (marks >= 70) score += 80;
+      else if (marks >= 60) score += 60;
+      else score += 40;
+      
+      if (career.demandLevel === 'Very High') score += 50;
+      else if (career.demandLevel === 'High') score += 35;
+      
+      if (experience > 5) score += 20;
+      return score;
+    }
+
+    function displayResults(results, marks, experience) {
+      const html = results.map(c => {
+        const projectedSalary = c.salary * (1 + (experience / 10));
+        return `
+          <div class="result-card">
+            <h6>${c.name}</h6>
+            <p><strong>Match Score:</strong> <span style="color: #667eea;">${(c.score / 100 * 100).toFixed(0)}%</span></p>
+            <p><strong>Current Salary:</strong> ₹${(c.salary / 100000).toFixed(1)}L+</p>
+            <p><strong>Projected (${experience}yrs):</strong> <span style="color: #22c55e;">₹${(projectedSalary / 100000).toFixed(1)}L+</span></p>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('resultsContainer').innerHTML = html;
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

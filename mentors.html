@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentors & Colleges - Career Will</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="particle.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #141620 0%, #1a1d2e 100%);
+      color: white;
+    }
+    .navbar { background: rgba(20, 22, 32, 0.95) !important; }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .mentor-card, .college-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s;
+    }
+    .mentor-card:hover, .college-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+    }
+    .mentor-card h5, .college-card h5 { color: #667eea; }
+    .star { color: #ffc107; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="welcome.html"><i class="fas fa-graduation-cap"></i> Career Will</a>
+      <button class="btn btn-danger" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <ul class="nav nav-tabs" role="tablist" style="border-color: rgba(102, 126, 234, 0.2); margin-bottom: 2rem;">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#mentors" style="color: white;">Mentors</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#colleges" style="color: white;">Colleges</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="mentors" class="tab-pane fade show active">
+        <h3 style="margin-bottom: 2rem;">Expert Mentors</h3>
+        <div id="mentorsContainer"></div>
+      </div>
+
+      <div id="colleges" class="tab-pane fade">
+        <h3 style="margin-bottom: 2rem;">Top Colleges</h3>
+        <div id="collegesContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    async function loadMentors() {
+      try {
+        const response = await fetch('http://localhost:5000/api/mentors/all');
+        const mentors = await response.json();
+
+        const html = mentors.map(m => `
+          <div class="mentor-card">
+            <h5><i class="fas fa-user-tie"></i> ${m.name}</h5>
+            <p><strong>Expertise:</strong> ${m.expertise}</p>
+            <p><strong>Experience:</strong> ${m.experience} years</p>
+            <p><strong>Rating:</strong> ${'<span class="star">★</span>'.repeat(Math.round(m.rating))} (${m.rating})</p>
+            <p style="margin: 0;"><strong>Email:</strong> ${m.email}</p>
+            <p><strong>Available:</strong> ${m.availability}</p>
+            <button class="btn btn-primary btn-sm mt-2" onclick="alert('Contact: ${m.email}')">Contact</button>
+          </div>
+        `).join('');
+
+        document.getElementById('mentorsContainer').innerHTML = html;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    async function loadColleges() {
+      try {
+        const response = await fetch('http://localhost:5000/api/colleges/all');
+        const colleges = await response.json();
+
+        const html = colleges.map(c => `
+          <div class="college-card">
+            <h5><i class="fas fa-graduation-cap"></i> ${c.name}</h5>
+            <p><strong>Stream:</strong> ${c.stream}</p>
+            <p><strong>Location:</strong> ${c.location}</p>
+            <p><strong>Rating:</strong> ${'<span class="star">★</span>'.repeat(Math.round(c.rating))} (${c.rating})</p>
+            <p><strong>Cutoff:</strong> ${c.cutoff}</p>
+            <button class="btn btn-primary btn-sm mt-2" onclick="alert('Apply at: ${c.name}')">Learn More</button>
+          </div>
+        `).join('');
+
+        document.getElementById('collegesContainer').innerHTML = html;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+
+    loadMentors();
+    loadColleges();
+  </script>
+</body>
+</html>
